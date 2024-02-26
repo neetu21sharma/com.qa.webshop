@@ -1,6 +1,8 @@
 package com.ws.tests;
 
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.ws.base.DriverScript;
@@ -9,20 +11,33 @@ import com.ws.pages.LoginPage;
 
 public class TestLoginPage extends DriverScript {
 	
+	HomePage homepage;
+	LoginPage loginPage;
+	
+	@BeforeMethod
+	public void setUp()
+	{
+		initApplication();
+		homepage = new HomePage();
+	    loginPage = new LoginPage();
+	}
+	@AfterMethod
+	public void tearDown()
+	{
+		quitDriver();
+	}
 	@Test(priority = 1)
 	public void testHomePageTitle() {
-		initApplication();
-		HomePage homepage = new HomePage();
+		
 		String title =homepage.getHomePageTitle();
 		Assert.assertTrue(title.contains("Demo Web Shop"));
-		quitDriver();
+		
 	}
 	@Test(priority = 2)
 	public void testLoginFunction() {
-		initApplication();
-		HomePage homepage = new HomePage();
+		
 		homepage.clickLogin();
-		LoginPage loginPage = new LoginPage();
+		
 		String loginPageTitle = loginPage.getLoginPageTitle();
 		Assert.assertTrue(loginPageTitle.contains("Login"));
 		loginPage.enterEmail("selauto1@test.com");
@@ -31,7 +46,18 @@ public class TestLoginPage extends DriverScript {
 		String title = homepage.getHomePageTitle();
 		Assert.assertTrue(title.contains("Demo Web Shop"));
 		homepage.clickLogout();
-		quitDriver();
+		
+	}
+	@Test(priority = 3)
+	public void testIsForgotPasswordLinkPresent() {
+		homepage.clickLogin();
+		String loginPageTitle = loginPage.getLoginPageTitle();
+		Assert.assertTrue(loginPageTitle.contains("Login"));
+		boolean flag = loginPage.isForgotPasswordLinkPresent();
+		Assert.assertTrue(flag);
+		
+		
+		
 	}
 
 
